@@ -9,19 +9,21 @@ directory = Path(__file__).resolve().parent
 one item of the sweep array has:
     one azimuth/elevation index
     data items, in order of nearest to furthest
-    gate info:
-        |   |   |   |
-        |   |   |   |
-        |   |   |   |
-        |   |   |
+    gate: 
+        v = list(0,number of gates) + 1
+            gives us a value for each item in the data array
+        g = v * width of one gate
+            converts data values to km by width (width of one gate = some number of km)
+        range = g + first gate
+            adjusts range values to be correctly distanced (starting from the true beginning, ending at 460.0km)
+
+        ((list(0,number of gates) + 1) - 0.5) * width of one gate + first gate
+        
 '''
 
 def load_file(filename):
     f = Level2File(str(directory / filename))
     return f
-
-def range(x, axis=0):
-    return np.max(x, axis=axis) - np.min(x, axis=axis)
 
 def processor(f):
     sweep = 0
@@ -53,11 +55,23 @@ def processor(f):
         for item in d:
             az_el(azimuth,elevation,item)
         #line_plot_gates(reflectivity[1],d)
-    (az,el)
-    plt.show()
 
 def az_el(az,el,rng):
     print(f"azimuth (horizontal): {az}, elevation (vertical): {el}, range (distance): {rng}km")
+
+
+def get_data(f,product,az,el,gate=0):
+    data = None
+    sweep = 0
+    print(f"product: {product}; az: {az}; el: {el}")
+    for i in range(len(f.sweeps)):
+        if f.sweeps[i][0][0].el_angle == el:
+            sweep = i
+            break
+    for ray in f.sweeps[sweep]:
+        print(type(ray[0].az_angle))
+    return data
+
 
 
 def plot_az_el(az,el):
@@ -83,4 +97,6 @@ def polar_plot_gates(data):
 
 if __name__ == "__main__":
     f = load_file("KVBX20191002_081520_V06")
-    processor(f)
+    #processor(f)
+    test = get_data(f,b"REF","139.25994873046875","0.3790283203125")
+    print(test)
