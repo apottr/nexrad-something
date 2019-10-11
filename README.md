@@ -2,6 +2,13 @@
 
 Test project for working with nexrad data, trying to learn about the way to handle data in a raw format.
 
+
+## structure
+msg31:
+  azimuth iterates 1-359
+  elevation remains the same per sweep
+  range increments from 2.0km to 460.0km
+
 ## Links
 
 [The WSR-88D Rainfall Algorithm](https://www.nws.noaa.gov/oh/hrl/papers/wsr88d/pps_paper_w%26f_1998.pdf)
