@@ -19,9 +19,14 @@ Kevin Skow's incredibly informative talk, with basic algorithms, limitations, an
 
 [Radar Fundamentals](http://faculty.nps.edu/jenn/Seminars/RadarFundamentals.pdf)
 Seminar on military-focused radar fundamentals.
-<<<<<<< HEAD
 
 [The WSR-88D Chaff Detection Algorithm](https://www.roc.noaa.gov/WSR88D/PublicDocs/TAC/2019/2019-04-29_TAC_Kurdzo_Presentation%20for%20web_122576.pdf)
 Lincoln Laboratory presentation on detecting chaff with HCA (Hydrometer Classification Algorithm)
-=======
->>>>>>> 873bd4f32f1191f53321bcf36e4ac0100f5884f2
+
+[Warning Decision Training Divison](https://training.weather.gov/wdtd/courses/rac/outline.php)
+Weather.gov training
+
+[Calibrating differential reflectivity on the WSR-88D](https://journals.ametsoc.org/doi/pdf/10.1175/JTECH1893.1)
+
+[WSR-88D Dual Polarization Initial Operational Capabilities](https://www.roc.noaa.gov/WSR88D/publicdocs/dualpol/Istok_AMS09_15.5_Dual_Pol_IOC_submitted.pdf)
+
