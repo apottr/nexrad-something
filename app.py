@@ -69,8 +69,15 @@ def get_data(f,product,az,el,gate=0):
             sweep = i
             break
     for ray in f.sweeps[sweep]:
-        print(type(ray[0].az_angle))
-    return data
+        if ray[0].az_angle == az:
+            data = ray
+            break
+    print(data[4].keys())
+    out = data[4][product]
+    outmeta = out[0]
+    ranged = (np.arange(outmeta.num_gates + 1) - 0.5) * outmeta.gate_width + outmeta.first_gate
+    print(ranged)
+    return out
 
 
 
@@ -98,5 +105,13 @@ def polar_plot_gates(data):
 if __name__ == "__main__":
     f = load_file("KVBX20191002_081520_V06")
     #processor(f)
-    test = get_data(f,b"REF","139.25994873046875","0.3790283203125")
+    azimuth = 139.25994873046875
+    elevation = 0.3790283203125
+    test = get_data(f,b"REF",azimuth,elevation)
+    test2 = get_data(f,b"PHI",azimuth,elevation)
+    test3 = get_data(f,b"ZDR",azimuth,elevation)
+    test4 = get_data(f,b"RHO",azimuth,elevation)
     print(test)
+    print(test2)
+    print(test3)
+    print(test4)
