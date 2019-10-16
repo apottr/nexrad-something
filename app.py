@@ -57,13 +57,15 @@ def processor(f):
         #line_plot_gates(reflectivity[1],d)
 
 def conv_to_ll(rlat,rlon,rel,az,el,rng):
-    r1 = 3959 + rel
-    theta = rlon
-    phi = 90 - rlat
+    deg_to_rad = lambda x: x * (np.pi / 180)
+    rad_to_deg = lambda x: x / (np.pi / 180)
+    r1 = 6378137 + rel
+    theta = deg_to_rad(rlon)
+    phi = deg_to_rad(90 - rlat)
 
     r2 = rng
-    theta2 = az
-    phi2 = 90 - el
+    theta2 = deg_to_rad(az)
+    phi2 = deg_to_rad(90 - el)
 
     x1 = r1*np.sin(phi)*np.cos(theta)
     y1 = r1*np.sin(phi)*np.sin(theta)

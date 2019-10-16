@@ -5,9 +5,22 @@ Test project for working with nexrad data, trying to learn about the way to hand
 
 ## structure
 msg31:
-  azimuth iterates 1-359
-  elevation remains the same per sweep
-  range increments from 2.0km to 460.0km
+  azimuth iterates 1-359  
+  elevation remains the same per sweep  
+  range increments from 2.0km to 460.0km  
+
+## math!!
+
+# for display on a PPI station
+
+X = r * sin(A) + X_c
+Y = r * cos(A) + Y_c
+
+where "r" is range, "A" is azimuth, "X_c" is the X coordinate of the origin, "Y_c" is the Y coordinate of the origin.
+
+# for conversion into LL
+
+
 
 ## Links
 
@@ -29,4 +42,31 @@ Weather.gov training
 [Calibrating differential reflectivity on the WSR-88D](https://journals.ametsoc.org/doi/pdf/10.1175/JTECH1893.1)
 
 [WSR-88D Dual Polarization Initial Operational Capabilities](https://www.roc.noaa.gov/WSR88D/publicdocs/dualpol/Istok_AMS09_15.5_Dual_Pol_IOC_submitted.pdf)
+
+[Space Physics Coordinate Transformations: A Users Guide](http://jsoc.stanford.edu/doc/keywords/Spacecraft_Coords/1-s2.0-003206339290012D-main(1).pdf)
+
+[Practical Astronomy with your Calculator or Spreadsheet](https://ia800209.us.archive.org/27/items/Practical_Astronomy_with_your_Calculator_or_Spreadsheet_4th_edition_by_Peter_Duf/Practical_Astronomy_with_your_Calculator_or_Spreadsheet_4th_edition_by_Peter_Duffett-Smith_Jonathan_Zwart.pdf)
+
+[Principles of Naval Weapon Systems](https://cdn.preterhuman.net/texts/science_and_technology/physics/Principles%20of%20Naval%20Weapons%20Systems.pdf)
+
+"An algorithm to deduce hydrometeor types and contents from multi-parameter radar data" Jerry M. Straka, 26TH INTERNATIONAL CONFERENCE ON RADAR METEOROLOGY Oklahoma College of Continuing Education, Norman Oklahoma 24 - 28 May 1993
+
+[Contributions to the American Meteorological Society's 26th International Conference on Radar Meteorology](https://www.ll.mit.edu/sites/default/files/publication/doc/2018-12/Wolfson_1993_ATC-199_WW-15318.pdf)
+
+"Classification of Hydrometeors Based on Polarimetric Radar Measurements:
+Development of Fuzzy Logic and Neuro-Fuzzy Systems, and In Situ Verification" Journal of Atmospheric And Oceanic Technology, Vol. 17
+
+[Federal Meteorological Handbook No. 11 Part A](https://www.roc.noaa.gov/WSR88D/PublicDocs/PartA_FMH11_05_09_OFCM_final.pdf)
+
+
+"The Hydrometeor Classification Algorithm for the Polarimetric WSR-88D:
+Description and Application to an MCS" Weather And Forecasting, Vol. 24
+
+[A Support Vector Machine Hydrometeor Classification Algorithm for Dual-Polarization Radar](https://doi.org/10.3390/atmos8080134)
+
+[Classification of convective/stratiform echoes in radar reflectivity observations using a fuzzy logic algorithm](https://agupubs.onlinelibrary.wiley.com/doi/epdf/10.1002/jgrd.50214)
+
+[A Bayesian Hydrometeor Classification Algorithm for C-Band Polarimetric Radar](https://www.mdpi.com/2072-4292/11/16/1884)
+
+[Using WSR-88D Polarimetric Data to Identify Bird-Contaminated Doppler Velocities](https://www.hindawi.com/journals/amete/2013/769275/)
 
