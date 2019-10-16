@@ -56,8 +56,36 @@ def processor(f):
             az_el(azimuth,elevation,item)
         #line_plot_gates(reflectivity[1],d)
 
+def conv_to_ll(rlat,rlon,rel,az,el,rng):
+    r1 = 3959 + rel
+    theta = rlon
+    phi = 90 - rlat
+
+    r2 = rng
+    theta2 = az
+    phi2 = 90 - el
+
+    x1 = r1*np.sin(phi)*np.cos(theta)
+    y1 = r1*np.sin(phi)*np.sin(theta)
+    z1 = r1*np.cos(phi)
+
+    x2 = r2*np.sin(phi2)*np.cos(theta2)
+    y2 = r2*np.sin(phi2)*np.sin(theta2)
+    z2 = r2*np.cos(phi2)
+
+    x = x1+x2
+    y = y1+y2
+    z = z1+z2
+
+    lat = 90 - np.arctan(np.sqrt(pow(x,2)+pow(y,2))/pow(z,2))
+    lon = np.arctan(y/x)
+
+    return {"lat": lat, "lon": lon}
+
 def az_el(az,el,rng):
+    out = conv_to_ll(34.838314,-120.397780,376,az,el,rng)
     print(f"azimuth (horizontal): {az}, elevation (vertical): {el}, range (distance): {rng}km")
+    print(f"{out['lat']},{out['lon']}")
 
 
 def get_data(f,product,az,el,gate=0):
@@ -76,7 +104,7 @@ def get_data(f,product,az,el,gate=0):
     out = data[4][product]
     outmeta = out[0]
     ranged = (np.arange(outmeta.num_gates + 1) - 0.5) * outmeta.gate_width + outmeta.first_gate
-    print(ranged)
+    az_el(az,el,ranged[-1])
     return out
 
 
