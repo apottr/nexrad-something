@@ -56,33 +56,51 @@ def processor(f):
             az_el(azimuth,elevation,item)
         #line_plot_gates(reflectivity[1],d)
 
+def conv_to_cart(rlat,rlon,rel,az,el,rng):
+
+    # converting TO cartesian is very broken.
+    R = ((4 / 3) * 6371 * 1000) + rel
+    """
+    z = np.sqrt( pow(rng,2) + pow(R,2) + 2 * rng * R * np.sin(el) - R )
+    s = R*np.arcsin( (rng * np.cos(el)) / (R+z) )
+    x = s * np.sin(az)
+    y = s * np.cos(az)""" #no good
+    theta_r = rlon
+    phi_r = 90 - rlat
+
+    theta_t = az
+    phi_t = 90-el
+
+    x_1 = R * np.sin(phi_r) * np.cos(theta_r)
+    y_1 = R * np.sin(phi_r) * np.sin(theta_r)
+    z_1 = R * np.cos(phi_r)
+
+    x_2 = rng * np.sin(phi_t) * np.cos(phi_t)
+    y_2 = rng * np.sin(phi_t) * np.sin(phi_t)
+    z_2 = rng * np.cos(phi_t)
+
+    x = x_1 + x_2
+    y = y_1 + y_2
+    z = z_1 + z_2
+
+    return x,y,z
+
+def conv_from_cart(x,y,z):
+
+    # converting FROM cartesian is correct, no changes needed.
+
+    a = 6378137.0 # WGS84 Semimajor axis
+    f = 1/298.257223563 # WGS84 Flatteing
+    b = a*(1-f) # Semiminor axis
+    z = np.sqrt(b**2*(1-((x**2+y**2)/a**2))) # Solving for the positive z value on the ellipsoid
+    p = np.sqrt(x**2+y**2) # Distance from the z-axis
+    Lat = np.arctan(z/(p*(1-f)**2))*180/np.pi # Solving the latitude value
+    Long = np.arctan2(y,x)*180/np.pi
+    return {"lat": Lat, "lon": Long}
+
 def conv_to_ll(rlat,rlon,rel,az,el,rng):
-    deg_to_rad = lambda x: x * (np.pi / 180)
-    rad_to_deg = lambda x: x / (np.pi / 180)
-    r1 = 6378137 + rel
-    theta = deg_to_rad(rlon)
-    phi = deg_to_rad(90 - rlat)
-
-    r2 = rng
-    theta2 = deg_to_rad(az)
-    phi2 = deg_to_rad(90 - el)
-
-    x1 = r1*np.sin(phi)*np.cos(theta)
-    y1 = r1*np.sin(phi)*np.sin(theta)
-    z1 = r1*np.cos(phi)
-
-    x2 = r2*np.sin(phi2)*np.cos(theta2)
-    y2 = r2*np.sin(phi2)*np.sin(theta2)
-    z2 = r2*np.cos(phi2)
-
-    x = x1+x2
-    y = y1+y2
-    z = z1+z2
-
-    lat = 90 - np.arctan(np.sqrt(pow(x,2)+pow(y,2))/pow(z,2))
-    lon = np.arctan(y/x)
-
-    return {"lat": lat, "lon": lon}
+    x,y,z = conv_to_cart(rlat,rlon,rel,az,el,rng)
+    return conv_from_cart(x,y,z)
 
 def az_el(az,el,rng):
     out = conv_to_ll(34.838314,-120.397780,376,az,el,rng)
@@ -145,3 +163,4 @@ if __name__ == "__main__":
     print(test2)
     print(test3)
     print(test4)
+
