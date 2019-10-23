@@ -5,6 +5,9 @@ Thank you to Gareth Rees at Stackoverflow for the solution here: https://coderev
 Thank you to lumberjack4 at Stackoverflow for the solution here: https://stackoverflow.com/a/3713058
 """
 
+a = 6378137 #earth semimajor axis
+rf = 298.257223563 # semi-major axis, reciprocal flattening
+
 def RAEtoECEF(objLLA,objRAE):
     # Range Azimuth Elevation to Earth-Centered Earth Fixed
     # ty lumberjack4
@@ -60,7 +63,6 @@ def geodetic_to_geocentric(siteObj):
     φ = np.radians(latitude)
     λ = np.radians(longitude)
     sin_φ = np.sin(φ)
-    a, rf = 6378137, 298.257223563 # semi-major axis, reciprocal flattening
     e2 = 1 - (1 - 1 / rf) ** 2  # eccentricity squared
     n = a / np.sqrt(1 - e2 * sin_φ ** 2) # prime vertical radius
     r = (n + height) * np.cos(φ)   # perpendicular distance from z axis
@@ -72,7 +74,7 @@ def geodetic_to_geocentric(siteObj):
 def conv_from_cart(x,y,z):
 
     # converting FROM cartesian is correct, no changes needed.
-    f = 1/298.257223563 # WGS84 Flatteing
+    f = 1/rf # WGS84 Flatteing
     b = a*(1-f) # Semiminor axis
     #print(f"semiminor axis: {b}, x: {x}, y: {y}, semimajor: {a}")
     z = np.sqrt(b**2*(1-((x**2+y**2)/a**2))) # Solving for the positive z value on the ellipsoid
@@ -97,7 +99,7 @@ if __name__ == "__main__":
     print("truth","(-2651949.38180034, -4520539.58365707, 3623373.83213543)")
     print(radarObj)
     print(siteObj)
-    x,y,z = RAEtoECR(siteObj,radarObj)
+    x,y,z = RAEtoECEF(siteObj,radarObj)
     print("range azimuth elevation to ecef -- latlon")
     print(conv_from_cart(x,y,z))
     print("truth to geo")

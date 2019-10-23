@@ -3,6 +3,7 @@ import numpy as np
 from pathlib import Path
 from metpy.io import Level2File
 from conversion import radar_to_latlon
+import csv,types
 directory = Path(__file__).resolve().parent
 
 '''
@@ -59,9 +60,10 @@ def processor(f):
 
 def az_el(az,el,rng):
     siteObj = {"lat": 34.838314, "lon": -120.397780, "alt": 376 }
-    out = radar_to_latlon(az,el,rng,siteObj["lat"],siteObj["lon"],siteObj["alt"])
-    print(f"azimuth (horizontal): {az}, elevation (vertical): {el}, range (distance): {rng}km")
-    print(f"{out['lat']},{out['lon']}")
+    out = radar_to_latlon(az,el,rng*1000,siteObj["lat"],siteObj["lon"],siteObj["alt"])
+    #print(f"azimuth (horizontal): {az}, elevation (vertical): {el}, range (distance): {rng}km")
+    #print(f"{out['lat']},{out['lon']}")
+    return out
 
 
 def get_data(f,product,az,el,gate=0):
@@ -80,43 +82,57 @@ def get_data(f,product,az,el,gate=0):
     out = data[4][product]
     outmeta = out[0]
     ranged = (np.arange(outmeta.num_gates + 1) - 0.5) * outmeta.gate_width + outmeta.first_gate
-    az_el(az,el,ranged[-1])
-    return out
+    return out,ranged
+
+def iter_azimuth(f,product,el,gate=0):
+    data = None
+    sweep = 0
+    for i in range(len(f.sweeps)):
+        if f.sweeps[i][0][0].el_angle == el:
+            sweep = i
+            break
+    for ray in f.sweeps[sweep]:
+        out = ray[4][product]
+        outmeta = out[0]
+        ranged = (np.arange(outmeta.num_gates + 1) - 0.5) * outmeta.gate_width + outmeta.first_gate
+        yield ray[0].az_angle,ranged
 
 
+def process_for_csv(az,el,rng):
+    if isinstance(az,types.GeneratorType):
+        for a in az:
+                azimuth = a[0]
+                ranged = a[1]
+                for item in ranged:
+                    yield az_el(azimuth,el,item)
+    else:
+        for item in rng:
+            yield az_el(az,el,item)
 
-def plot_az_el(az,el):
-    plt.plot(az)
-    plt.plot(el)
+def gen_csv(az,el,rng=None):
+    with open("test.csv","w+") as f:
+        writer = csv.DictWriter(f,fieldnames=["lat","lon"])
+        writer.writeheader()
+        for item in process_for_csv(az,el,rng):
+            #print(item)
+            writer.writerow(item)
 
-
-def line_plot_gates(a,b=None):
-    plt.plot(a)
-    try:
-        data = np.ma.array(b)
-        data[np.isnan(data)] = np.ma.masked
-        plt.plot(b)
-    except:
-        pass
-    plt.show()
-
-def polar_plot_gates(data):
-    
-    for rad,idx in zip(data,rads):
-        plt.polar(rad,idx)
-    plt.show()
 
 if __name__ == "__main__":
     f = load_file("KVBX20191002_081520_V06")
     #processor(f)
-    azimuth = 139.25994873046875
+    #azimuth = 139.25994873046875
     elevation = 0.3790283203125
-    test = get_data(f,b"REF",azimuth,elevation)
-    test2 = get_data(f,b"PHI",azimuth,elevation)
-    test3 = get_data(f,b"ZDR",azimuth,elevation)
-    test4 = get_data(f,b"RHO",azimuth,elevation)
+    #test,ranged = get_data(f,b"REF",azimuth,elevation)
+    alz = iter_azimuth(f,b"REF",elevation)
+    """
+    test2,ranged2 = get_data(f,b"PHI",azimuth,elevation)
+    test3,ranged3 = get_data(f,b"ZDR",azimuth,elevation)
+    test4,ranged4 = get_data(f,b"RHO",azimuth,elevation)
     print(test)
     print(test2)
     print(test3)
     print(test4)
-
+    """
+    #gen_csv(azimuth,elevation,ranged) for non-list azimuths
+    gen_csv(alz,elevation) # for list azimuths
