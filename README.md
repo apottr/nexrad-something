@@ -70,3 +70,10 @@ Description and Application to an MCS" Weather And Forecasting, Vol. 24
 
 [Using WSR-88D Polarimetric Data to Identify Bird-Contaminated Doppler Velocities](https://www.hindawi.com/journals/amete/2013/769275/)
 
+[Py-ART](https://arm-doe.github.io/pyart/)
+
+[Darksky OpenCV & NN cleaning](https://blog.darksky.net/cleaning-radar-images-using-neural-nets-computer-vision/)
+
+[Fuzzy Membership Functions](http://www.philadelphia.edu.jo/academics/qhamarsheh/uploads/Lecture%2018_Different%20Types%20of%20Membership%20Functions%201.pdf)
+
+
