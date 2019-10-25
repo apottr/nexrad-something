@@ -97,6 +97,16 @@ def iter_azimuth(f,product,el,gate=0):
         ranged = (np.arange(outmeta.num_gates + 1) - 0.5) * outmeta.gate_width + outmeta.first_gate
         yield ray[0].az_angle,ranged
 
+def iter_elevation(f,product,az,gate=0):
+    start = lambda x: str(x).split('.')[0]
+    for i in range(len(f.sweeps)):
+        for ray in f.sweeps[i]:
+            if start(ray[0].az_angle) == start(az):
+                out = ray[4][product]
+                outmeta = out[0]
+                ranged = (np.arange(outmeta.num_gates + 1) - 0.5) * outmeta.gate_width + outmeta.first_gate
+                yield ray[0].el_angle,ranged,out[1]
+
 
 def process_for_csv(az,el,rng):
     if isinstance(az,types.GeneratorType):
@@ -117,14 +127,31 @@ def gen_csv(az,el,rng=None):
             #print(item)
             writer.writerow(item)
 
+def plot_ele(elevation):
+    #data[1] is the range gates (array)
+    #data[0] is the elevation angle (single value)
+    #data[2] is the gate data (array)
+    data = elevation.__next__()
+    cmap = plt.get_cmap('PiYG')
+    fig, ax = plt.subplots(nrows=1)
+    els = np.repeat(data[0],len(data[2]))
+    dimgate = np.column_stack((els,data[2]))
+    print(dimgate)
+    im = ax.pcolormesh(data[1][:-1],els,data[2])
+    fig.colorbar(im,ax=ax)
+    plt.show()
+    
+
 
 if __name__ == "__main__":
     f = load_file("KVBX20191002_081520_V06")
     #processor(f)
-    #azimuth = 139.25994873046875
+    azimuth = 139.25994873046875
     elevation = 0.3790283203125
     #test,ranged = get_data(f,b"REF",azimuth,elevation)
-    alz = iter_azimuth(f,b"REF",elevation)
+    #alz = iter_azimuth(f,b"REF",elevation)
+    ele = iter_elevation(f,b"REF",azimuth)
+    plot_ele(ele)
     """
     test2,ranged2 = get_data(f,b"PHI",azimuth,elevation)
     test3,ranged3 = get_data(f,b"ZDR",azimuth,elevation)
@@ -135,4 +162,4 @@ if __name__ == "__main__":
     print(test4)
     """
     #gen_csv(azimuth,elevation,ranged) for non-list azimuths
-    gen_csv(alz,elevation) # for list azimuths
+    #gen_csv(alz,elevation) # for list azimuths
