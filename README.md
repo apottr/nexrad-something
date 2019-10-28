@@ -1,26 +1,9 @@
 # NEXRAD something
 
-Test project for working with nexrad data, trying to learn about the way to handle data in a raw format.
+Test project for working with nexrad data, trying to learn about how to handle the data in a raw format.
 
-
-## structure
-msg31:
-  azimuth iterates 1-359  
-  elevation remains the same per sweep  
-  range increments from 2.0km to 460.0km  
-
-## math!!
-
-# for display on a PPI station
-
-X = r * sin(A) + X_c
-Y = r * cos(A) + Y_c
-
-where "r" is range, "A" is azimuth, "X_c" is the X coordinate of the origin, "Y_c" is the Y coordinate of the origin.
-
-# for conversion into LL
-
-
+## Getting Started
+Run `sh download.sh` to pull down the required radar data from AWS S3.
 
 ## Links
 
