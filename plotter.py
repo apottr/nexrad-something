@@ -6,16 +6,17 @@ directory = Path(__file__).resolve().parent
 
 files = {
     "2019": {
-        "10": [
-            {"name": "KVBX20191002_081520_V06", "launch": True},
-            {"name": "KVBX20191002_082505_V06", "launch": True},
-            {"name": "KVBX20191005_081923_V06", "launch": False}
-        ],
-        "05": [
-            {"name": "KVBX20190501_093433_V06", "launch": True},
-            {"name": "KVBX20190501_094607_V06", "launch": True},
-            {"name": "KVBX20190508_094821_V06", "launch": False}
-        ]
+        "10": {
+            "020815": {"name": "KVBX20191002_081520_V06", "launch": True},
+            "020825": {"name": "KVBX20191002_082505_V06", "launch": True},
+            "050819": {"name": "KVBX20191005_081923_V06", "launch": False}
+        },
+        "05": {
+            "010934": {"name": "KVBX20190501_093433_V06", "launch": True},
+            "010946": {"name": "KVBX20190501_094607_V06", "launch": True},
+            "080948": {"name": "KVBX20190508_094821_V06", "launch": False}
+        },
+        
     }
 }
 
@@ -113,7 +114,7 @@ def plotted(objs,product):
 
 if __name__ == "__main__":
     objs = ["2019100","2019101","2019050","2019051"]
-    objs1 = ["2019050","2019051","2019100","2019101","201902"]
+    #objs1 = ["2019050","2019051","2019100","2019101","201902"]
     #plot_same_product(objs,"differential_phase")
     #plot_same_product(objs1,"differential_phase")
     plotted(objs,"differential_phase")
