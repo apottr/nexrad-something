@@ -1,3 +1,4 @@
 test.csv
-figures/*
-radars/*
+figures/*.png
+radars/*_V06
+pdfs/*.pdf

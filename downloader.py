@@ -17,7 +17,10 @@ def puller(dt,station):
 def download(key):
     fname = key.split("/")[-1]
     print(key,bucket)
-    s3.download_file(bucket,key,str(directory / "radars" / fname))
+    if not (directory / "radars" / fname).exists() and not ("MDM" in fname):
+        s3.download_file(bucket,key,str(directory / "radars" / fname))
+    else:
+        print("File already downloaded, skipping...")
 
 def interp_key(key):
     #2019/10/02/KVBX/KVBX20191002_000604_V06

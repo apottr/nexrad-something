@@ -2,6 +2,9 @@
 
 Test project for working with nexrad data, trying to learn about how to handle the data in a raw format.
 
+## Available products
+Differential Reflectivity (Z<sub>DR</sub>), Cross Correlation Ratio (CC), Differential Phase (Phi<sub>DP</sub>), Reflectivity (Z), Velocity (V), Spectrum Width (SW). 
+
 ## Getting Started
 Run `sh download.sh` to pull down the required radar data from AWS S3.
 
@@ -59,4 +62,6 @@ Description and Application to an MCS" Weather And Forecasting, Vol. 24
 
 [Fuzzy Membership Functions](http://www.philadelphia.edu.jo/academics/qhamarsheh/uploads/Lecture%2018_Different%20Types%20of%20Membership%20Functions%201.pdf)
 
+[Testing a Procedure for Automatic Classification of Hydrometeor Types](https://doi.org/10.1175/1520-0426(2001)018<0892:TAPFAC>2.0.CO;2)
 
+[Correlation Coefficients between Horizontally and Vertically Polarized Returns from Ground Clutter](https://doi.org/10.1175/JTECH1856.1)

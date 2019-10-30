@@ -1,33 +1,19 @@
 import matplotlib.pyplot as plt
-import pyart,math
+import pyart,math,sys
 from pathlib import Path
 
 directory = Path(__file__).resolve().parent
 
-files = {
-    "2019": {
-        "10": {
-            "020815": {"name": "KVBX20191002_081520_V06", "launch": True},
-            "020825": {"name": "KVBX20191002_082505_V06", "launch": True},
-            "050819": {"name": "KVBX20191005_081923_V06", "launch": False}
-        },
-        "05": {
-            "010934": {"name": "KVBX20190501_093433_V06", "launch": True},
-            "010946": {"name": "KVBX20190501_094607_V06", "launch": True},
-            "080948": {"name": "KVBX20190508_094821_V06", "launch": False}
-        },
-        
-    }
-}
+files = []
 
 xlimit = [10,30]
 ylimit = [0,9]
 
-getfile = lambda x: files[x[:4]][x[4:6]][int(x[6:])]
-
-
 def render_file(fname):
-    radar = pyart.io.read_nexrad_archive(str(directory/"radars"/fname["name"]))
+    try:
+        radar = pyart.io.read_nexrad_archive(fname)
+    except Exception as e:
+        print(e,fname)
     xsect = pyart.util.cross_section_ppi(radar, [274,275])
     display = pyart.graph.RadarDisplay(xsect)
     return display
@@ -42,13 +28,20 @@ def render_figure(display,product,location):
 def render_frames(display,fname):
     keys = list(display.fields.keys())
     for i in range(len(keys)):
-        render_figure(display,keys[i],str(directory/"figures"/f"{fname['name']}_{keys[i]}"))
+        render_figure(display,keys[i],str(directory/"figures"/f"{fname.name}_{keys[i]}"))
 
 def render_frame(display,fname,product):
     if product not in display.fields.keys():
-        raise IndexError("key not in fields")
-    render_figure(display,product,str(directory/"figures"/f"{fname['name']}_{keys[i]}"))
-    
+        raise IndexError("key not in fields: \n got {} \n wanted {}".format(product,display.fields.keys()))
+    render_figure(display,product,str(directory/"figures"/f"{fname.name}_{product}"))
+
+"""def render_frame(display,fname,product):
+    if product not in display.fields.keys():
+        raise IndexError("key not in fields: \n got {} \n wanted {}".format(product,display.fields.keys()))
+    date = fname.name.split("_")[0][4:]
+    y,m,d = date[:4],date[4:6],date[6:]
+    f = str(directory/"figures"/y/m/d/f"{fname.name}_{product}")
+    render_figure(display,product,f)"""
 
 def plotter(display,fig,gs,idx):
     keys = list(display.fields.keys())
@@ -73,7 +66,7 @@ def plot_all(objs):
     fig = plt.figure()
     gs = fig.add_gridspec(6,len(objs))
     for i in range(len(objs)):
-        display = render_file(getfile(objs[i]))
+        display = render_file(objs[i])
         plotter(display,fig,gs,i)
     plt.show()
 
@@ -87,16 +80,15 @@ def plot_same_product(objs,product):
     for y in range(h):
         for x in range(w):
             f = objs[x+y]
-            display = render_file(getfile(f))
+            display = render_file(f)
             print(f,x,y)
             plot_single(display,product,fig,gs,x,y) 
     plt.show()
 
 def render_same_product(objs,product):
     for f in objs:
-        fi = getfile(f)
-        display = render_file(fi)
-        render_frame(display,product,fi["name"])
+        display = render_file(f)
+        render_frame(display,f,product)
 
 def plotted(objs,product):
     fig = plt.figure()
@@ -109,15 +101,19 @@ def plotted(objs,product):
     plot_single(x2,product,fig,gs,0,1)
     plot_single(x3,product,fig,gs,1,0)
     plot_single(x4,product,fig,gs,1,1)
-
     plt.show()
 
+def load_files():
+    return list((directory / "radars").glob("*_V06"))
+
 if __name__ == "__main__":
-    objs = ["2019100","2019101","2019050","2019051"]
+    files = load_files()
+    #objs = ["2019100","2019101","2019050","2019051"]
     #objs1 = ["2019050","2019051","2019100","2019101","201902"]
     #plot_same_product(objs,"differential_phase")
     #plot_same_product(objs1,"differential_phase")
-    plotted(objs,"differential_phase")
+    render_same_product(files,sys.argv[1])
+    #plotted(objs,"differential_phase")
     #plot_all(objs)
     #display = render_file(getfile("2019102"))
     #render_frames(display,getfile("2019102"))
