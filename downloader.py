@@ -2,6 +2,7 @@ import boto3,pendulum,csv,sys
 from botocore import UNSIGNED
 from botocore.client import Config
 from pathlib import Path
+from base64 import b64decode
 
 s3 = boto3.client('s3',config=Config(signature_version=UNSIGNED))
 bucket = "noaa-nexrad-level2"
@@ -14,8 +15,8 @@ def puller(dt,station):
     print(pth)
     return s3.list_objects(Bucket=bucket,Delimiter="/",Prefix=pth)["Contents"]
 
-def download(key):
-    fname = key.split("/")[-1]
+def download(key,b64):
+    fname = key.split("/")[-1]+"-"+b64
     print(key,bucket)
     if not (directory / "radars" / fname).exists() and not ("MDM" in fname):
         s3.download_file(bucket,key,str(directory / "radars" / fname))
@@ -90,13 +91,13 @@ def iter_tester(goal):
             matched = match_time(has,goal)
             if matched: print(has,goal)
 
-def iter_real(goal):
-    data = puller(goal,"KVBX")
+def iter_real(goal,b64):
+    data = puller(goal,sys.argv[1])
     for obj in data:
         #print(obj["Key"])
         has = interp_key(obj["Key"])
         if match_time(has,goal):
-            download(obj["Key"])
+            download(obj["Key"],b64)
 
 if __name__ == "__main__":
     #key = "2019/10/02/KVBX/KVBX20191002_000604_V06"
@@ -114,6 +115,6 @@ if __name__ == "__main__":
     print("should return true: ",match_time(has,guu,debug=True))"""
     #goal = pendulum.datetime(2019,10,2,1,13,00,tz="America/Los_Angeles")
     #iter_tester(goal)
-    y,mo,d,h,m = [int(x) for x in (sys.argv[1:])]
+    y,mo,d,h,m = [int(x) for x in (b64decode(sys.argv[2]).split(b" "))]
     goal = pendulum.datetime(y,mo,d,h,m,0,tz="America/Los_Angeles")
-    iter_real(goal)
+    iter_real(goal,sys.argv[2])

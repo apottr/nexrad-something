@@ -13,6 +13,7 @@ numpy = "*"
 metpy = "*"
 netcdf4 = "*"
 arm-pyart = "*"
+csu-radartools = "*"
 
 [requires]
 python_version = "3.7"
