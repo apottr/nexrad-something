@@ -65,3 +65,5 @@ Description and Application to an MCS" Weather And Forecasting, Vol. 24
 [Testing a Procedure for Automatic Classification of Hydrometeor Types](https://doi.org/10.1175/1520-0426(2001)018<0892:TAPFAC>2.0.CO;2)
 
 [Correlation Coefficients between Horizontally and Vertically Polarized Returns from Ground Clutter](https://doi.org/10.1175/JTECH1856.1)
+
+[Bulk Hydrometeor Classification and Quantification Using Polarimetric Radar Data: Synthesis of Relations](https://doi.org/10.1175/1520-0450(2000)039<1341:BHCAQU>2.0.CO;2)
