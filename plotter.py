@@ -1,7 +1,8 @@
 import matplotlib.pyplot as plt
-import pyart,math,sys
+import math,sys
 from pathlib import Path
 from base64 import b64decode as decode
+from core import render_file
 
 directory = Path(__file__).resolve().parent
 
@@ -9,24 +10,6 @@ files = []
 
 xlimit = [15,20]
 ylimit = [0,10]
-
-def load_file(fname):
-    try:
-        radar = pyart.io.read_nexrad_archive(fname)
-    except Exception as e:
-        print(e,fname)
-    xsect = pyart.util.cross_section_ppi(radar, [274])
-    return xsect
-
-def aaaa(fname):
-    radar = pyart.io.read_nexrad_archive(fname)
-    return radar
-
-def render_file(fname):
-    b64 = fname.name.split("-")[1]
-    xsect = load_file(fname)
-    display = pyart.graph.RadarDisplay(xsect)
-    return display,b64
 
 def decoder(b64):
     d = decode(b64).decode()
@@ -50,7 +33,7 @@ def render_frames(display,fname,b64):
         render_figure(display,keys[i],str(directory/"figures"/f"{fname.name}_{keys[i]}"))
 
 def render_frame(display,fname,product,b64):
-    nme = fname.name.replace(".gz","").split("-")
+    nme = fname.name
     if product not in display.fields.keys():
         raise IndexError("key not in fields: \n got {} \n wanted {}".format(product,display.fields.keys()))
     render_figure(display,product,str(directory/"figures"/f"{nme[0]}_{product}"),b64)
@@ -139,8 +122,12 @@ def load_files():
     return list((directory / "radars").glob("*_V06*"))
 
 if __name__ == "__main__":
-    product = sys.argv[1] if len(sys.argv) > 1 else "differential_phase"
-    files = load_files()
+    if len(sys.argv) > 1:
+        product = sys.argv[1]
+        files = load_files()
+    else:
+        print("Please include product name as sys.argv[1] for proper function.")
+        sys.exit(1)
     #objs = ["2019100","2019101","2019050","2019051"]
     #objs1 = ["2019050","2019051","2019100","2019101","201902"]
     #plot_same_product(objs,"differential_phase")
