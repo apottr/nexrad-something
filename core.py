@@ -10,8 +10,11 @@ def load_file(fname):
     xsect = cross_section_ppi(radar, [274])
     return xsect
 
+def _get_b64(fname):
+    return fname.name.split("-")[1]
+
 def render_file(fname):
-    b64 = fname.name.split("-")[1]
+    b64 = _get_b64(fname)
     xsect = load_file(fname)
     display = RadarDisplay(xsect)
     return display,b64
